@@ -6,10 +6,10 @@
 * usage: rici , ritest(string) reg(string) treatvar(varname) outcome(varname)
 *
 * ritest( ) - full ritest command before the colon, including the command name
-* e.g "ritest treat _b[treat], reps(100)"
+* e.g.: ritest treat _b[treat], reps(100)
 * 
 * reg( ) - regression command to pass to ritest after the colon
-* e.g. "regress y treat"
+* e.g.: regress y treat
 *
 * treatvar( ) - treatment variable of interest to permute, e.g. treat
 *
