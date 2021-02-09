@@ -1,9 +1,37 @@
 * 1.0 Adam Sacarny February 2021
-* power calculation for Poisson regression based on
+* Power calculation for Poisson regression based on
 * Signorini, David F. "Sample size for Poisson regression"
 * Biometrika (1991)
 
 ***** USE AT YOUR OWN RISK, THIS CODE HAS NOT BEEN WELL TESTED!!!!! ******
+
+* This command estimates sample size, power, or effect size for a Poisson
+* regression with one binary covariate. It can accommodate overdispersion
+* and power gains from additional covariates as statistical controls.
+
+* y_i ~ Poisson(l_i), l_i = t_i*exp(a + bx_i + Z_i*c)
+* where t_i is an optional exposure, x_i is the binary covariate, and Z_i is an
+* optional vector of additional covariates distrbuted multivariate normal. t_i,
+* x_i, and Z_i are assumed independent.
+
+* H0: b = b0
+* Ha: b = ba
+
+* To account for overdispersion and/or additional controls, use the phi
+* parameter. When accounting for overdispersion, we relax assumptions to
+* allow Var[Y|x,Z] = s^2 * E[Y|x,Z]. You can estimate s^2 after a pilot Poisson
+* regression by running 'estat gof' and dividing the fit test by its degrees
+* of freedom. Then pass that result to phi.
+
+* When accounting for power gains from additional controls Z, we assume they are
+* distributed N(m,R). In this case, the asymptotic variance of b is multiplied
+* by k=exp(-c'm - (1/2)c'Rc) to account for power gains from the controls. You
+* can estimate k by estimating the mean and variance-covariance matrix of Z,
+* then by running a pilot Poisson regression to extract the projected
+* coefficients. Then calculate k and pass the result to phi.
+
+* Overdispersion and additional controls can be accounted by calculating s^2 and
+* k as above and then passing (s^2 * k) to phi.
 
 * Usage:
 
@@ -38,14 +66,14 @@
 
 * n(numlist) - total sample size. required to compute power or effect size
 
+* mu_t(real) - mean of exposure parameter. default is mu_t(1)
+
+* pi(real) - mean of binary covariate. default is pi(0.5)
+
 * phi(real) - poisson overdispersion parameter (see sigma^2 in power notes)
 * and/or multiplier to account for power gains from statistical controls (see
 * kappa in power notes).  default is phi(1) (no overdispersion/no gains from
 * statistical controls)
-
-* mu_t(real) - exposure parameter. default is mu_t(1)
-
-* pi(real) - mean parameter of bernoulli variable. default is pi(0.5)
 
 * direction(upper|lower) - when graphing effect sizes, graph the minimum
 * detectable effect ba > b0 (upper) or ba < b0 (lower). default is upper.
